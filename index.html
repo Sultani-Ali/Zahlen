@@ -58,7 +58,7 @@
         function generateNumber() {
     currentNumber = Math.floor(Math.random() * 100) + 1;
 
-    const utterance = new SpeechSynthesisUtterance(currentNumber.toString());
+    const utterance = new SpeechSynthesisUtterance(currentNumber.toString() + ".");
     utterance.lang = 'de-DE';
 
     // Try to get a German voice

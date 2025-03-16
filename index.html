@@ -56,32 +56,28 @@
         let currentNumber;
 
         function generateNumber() {
-            currentNumber = Math.floor(Math.random() * 100) + 1;
+    currentNumber = Math.floor(Math.random() * 100) + 1;
 
-            const utterance = new SpeechSynthesisUtterance(currentNumber.toString() + ".");
-            utterance.lang = 'de-DE';
+    const utterance = new SpeechSynthesisUtterance(currentNumber.toString());
+    utterance.lang = 'de-DE';
 
-            // Wait for voices to load before speaking
-            speechSynthesis.onvoiceschanged = () => {
-                const voices = speechSynthesis.getVoices();
-                const germanVoice = voices.find(voice => voice.lang === 'de-DE' && voice.name.includes("Google"));
+    // Try to get a German voice
+    const voices = speechSynthesis.getVoices();
+    const germanVoice = voices.find(voice => voice.lang.startsWith('de'));
 
-                if (germanVoice) {
-                    utterance.voice = germanVoice;
-                }
+    if (germanVoice) {
+        utterance.voice = germanVoice;
+    }
 
-                speechSynthesis.speak(utterance);
-            };
+    // Speak AFTER a small delay to ensure voices are loaded
+    setTimeout(() => {
+        speechSynthesis.speak(utterance);
+    }, 200);
 
-            // If voices are already loaded, speak immediately
-            if (speechSynthesis.getVoices().length > 0) {
-                speechSynthesis.speak(utterance);
-            }
-
-            // Clear previous input and result
-            document.getElementById('userInput').value = "";
-            document.getElementById('result').innerText = "";
-        }
+    // Clear previous input and result
+    document.getElementById('userInput').value = "";
+    document.getElementById('result').innerText = "";
+    }
 
         function checkAnswer() {
             const userAnswer = parseInt(document.getElementById('userInput').value, 10);

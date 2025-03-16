@@ -57,10 +57,27 @@
 
         function generateNumber() {
             currentNumber = Math.floor(Math.random() * 100) + 1;
-            const utterance = new SpeechSynthesisUtterance(currentNumber.toString()+".");
+
+            const utterance = new SpeechSynthesisUtterance(currentNumber.toString() + ".");
             utterance.lang = 'de-DE';
-            speechSynthesis.speak(utterance);
-            
+
+            // Wait for voices to load before speaking
+            speechSynthesis.onvoiceschanged = () => {
+                const voices = speechSynthesis.getVoices();
+                const germanVoice = voices.find(voice => voice.lang === 'de-DE' && voice.name.includes("Google"));
+
+                if (germanVoice) {
+                    utterance.voice = germanVoice;
+                }
+
+                speechSynthesis.speak(utterance);
+            };
+
+            // If voices are already loaded, speak immediately
+            if (speechSynthesis.getVoices().length > 0) {
+                speechSynthesis.speak(utterance);
+            }
+
             // Clear previous input and result
             document.getElementById('userInput').value = "";
             document.getElementById('result').innerText = "";

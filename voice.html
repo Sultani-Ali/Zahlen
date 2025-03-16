@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zahlenquiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        button, input {
+            padding: 15px;
+            font-size: 18px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input {
+            width: 80%;
+            max-width: 200px;
+            text-align: center;
+        }
+        #result {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Zahlenquiz</h1>
+    <button onclick="generateNumber()">Zahl ansagen</button>
+    <p id="instruction">Höre die Zahl und gib sie ein:</p>
+    <input type="number" id="userInput" placeholder="Zahl eingeben">
+    <button onclick="checkAnswer()">Überprüfen</button>
+    <p id="result"></p>
+
+    <script>
+        let currentNumber;
+
+        function generateNumber() {
+            currentNumber = Math.floor(Math.random() * 100) + 1;
+            const utterance = new SpeechSynthesisUtterance(currentNumber.toString());
+            utterance.lang = 'de-DE';
+            speechSynthesis.speak(utterance);
+            
+            // Clear previous input and result
+            document.getElementById('userInput').value = "";
+            document.getElementById('result').innerText = "";
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('userInput').value, 10);
+            const resultDisplay = document.getElementById('result');
+            
+            if (userAnswer === currentNumber) {
+                resultDisplay.innerText = "✅ Richtig!";
+                resultDisplay.style.color = "green";
+            } else {
+                resultDisplay.innerText = `❌ Falsch! Die richtige Zahl war ${currentNumber}.`;
+                resultDisplay.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -55,24 +55,29 @@
     <script>
         let currentNumber;
 
-        function generateNumber() {
+      function generateNumber() {
     currentNumber = Math.floor(Math.random() * 100) + 1;
 
-    const utterance = new SpeechSynthesisUtterance(currentNumber.toString() + ".");
+    const utterance = new SpeechSynthesisUtterance(currentNumber.toString());
     utterance.lang = 'de-DE';
 
-    // Try to get a German voice
-    const voices = speechSynthesis.getVoices();
-    const germanVoice = voices.find(voice => voice.lang.startsWith('de'));
+    function speak() {
+        const voices = speechSynthesis.getVoices();
+        const germanVoice = voices.find(voice => voice.lang.startsWith('de'));
 
-    if (germanVoice) {
-        utterance.voice = germanVoice;
+        if (germanVoice) {
+            utterance.voice = germanVoice;
+        }
+
+        speechSynthesis.speak(utterance);
     }
 
-    // Speak AFTER a small delay to ensure voices are loaded
-    setTimeout(() => {
-        speechSynthesis.speak(utterance);
-    }, 200);
+    // Ensure voices are loaded before speaking
+    if (speechSynthesis.getVoices().length === 0) {
+        speechSynthesis.onvoiceschanged = speak;
+    } else {
+        speak();
+    }
 
     // Clear previous input and result
     document.getElementById('userInput').value = "";
